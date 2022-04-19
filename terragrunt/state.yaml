@@ -1,0 +1,4 @@
+subscription_id: "ce9272f1-2e3b-4887-92bb-1371bf076792"
+resource_group_name: "tech-bit-demo"
+storage_account_name: "demostoragetfstate"
+container_name: "tfstates"
