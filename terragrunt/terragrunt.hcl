@@ -4,7 +4,7 @@ remote_state {
   backend = "azurerm"
   disable_dependency_optimization = true
   config = merge(local.remote_state, {
-    key = "terragrunt-demo/${path_relative_to_include()}/terraform.tfstate"
+    key = local.state_key
   })
   generate = {
     path      = "backend.tf"
@@ -34,17 +34,15 @@ terraform {
     arguments = ["-lock=false"]
   }
 
-  after_hook "rm_backend_tf" {
-    commands = ["apply", "destroy", "plan"]
-    execute  = [
-      "rm",
-      "-rf",
-      "${get_parent_terragrunt_dir()}/.terraform"
-    ]
-    run_on_error = true
-  }
+#  after_hook "after_hook" {
+#    commands = ["destroy"]
+#    execute  = ["sh", "${get_parent_terragrunt_dir()}/../scripts/delete_all_cache_files.sh", "${local.retrieve_env_reg}", "${path_relative_to_include()}"]
+#  }
 }
 
 locals {
   remote_state = yamldecode(file("state.yaml"))
+  state_key = "terragrunt-demo/${path_relative_to_include()}/terraform.tfstate"
+  retrieve_env_reg = split("/", path_relative_to_include()) // Example of the result:  ["solution-demo","prod","northeurope","base"]
 }
+

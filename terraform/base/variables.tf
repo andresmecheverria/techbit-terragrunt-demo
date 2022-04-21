@@ -29,3 +29,8 @@ variable "tags" {
   type        = map(string)
   description = "This are the input tags for deployment"
 }
+
+variable "suffix" {
+  type = string
+  description = "Suffix for demo purposes"
+}

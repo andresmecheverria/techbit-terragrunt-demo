@@ -34,3 +34,8 @@ variable "resource_group_name" {
   type        = string
   description = "Input resource group name definition"
 }
+
+variable "suffix" {
+  type = string
+  description = "Suffix for demo purposes"
+}

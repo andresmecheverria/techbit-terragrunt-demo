@@ -1,5 +1,6 @@
-include {
+include "root" {
   path = find_in_parent_folders()
+  expose = true
 }
 
 locals {
@@ -14,7 +15,7 @@ locals {
 }
 
 terraform {
-  source = "${path_relative_from_include()}/../terraform//layerBase"
+  source = "${path_relative_from_include()}/../terraform//base"
 
   extra_arguments "common_vars" {
     commands = [
@@ -32,16 +33,11 @@ terraform {
     ]
   }
 
-  after_hook "rm_backend_tf" {
-    commands = ["apply", "destroy"]
-    execute  = [
-      "rm",
-      "-rf",
-      "${get_terragrunt_dir()}/../**/*/.terragrunt-cache",
-      "${get_terragrunt_dir()}/../**/*/.terraform.lock.hcl"
-    ]
-    run_on_error = true
+  after_hook "after_hook" {
+    commands = ["init"]
+    execute  = ["sh", "${get_parent_terragrunt_dir()}/../scripts/delete_all_cache_files.sh", "${include.root.locals.retrieve_env_reg[1]}", "${path_relative_to_include()}"]
   }
+
 }
 
 generate "provider" {
@@ -56,8 +52,8 @@ EOF
 }
 
 inputs = {
-  env                 = local.env
-  location_name       = local.location_name
+  env                 = include.root.locals.retrieve_env_reg[1]
+  location_name       = include.root.locals.retrieve_env_reg[2]
   location_id         = local.location_id
   tags                = local.global_tags
 }

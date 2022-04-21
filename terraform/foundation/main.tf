@@ -1,10 +1,11 @@
 locals {
-  sa_name           = replace(format("sa%s%s%s", lower(var.project), lower(var.env), var.location_id), "-","")
+  sa_name           = replace(format("sa%s%s%s", lower(var.project), lower(var.env), var.location_id), "-", "")
   sa_container_name = replace(format("sa-container-%s-%s-%s-%s", lower(var.project), lower(var.domain), lower(var.env), var.location_id), "-", "")
   tags = merge(
     var.tags,
     {
       "CUSTOM_MODULE_TAGS" = "Hello techbit"
+      "SUFFIX" = var.suffix
     }
   )
 }
